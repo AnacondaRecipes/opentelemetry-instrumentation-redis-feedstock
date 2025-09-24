@@ -1,46 +1,57 @@
 {% set name = "opentelemetry-instrumentation-redis" %}
-{% set version = "0.36b0" %}
+{% set version = "0.58b0" %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/opentelemetry_instrumentation_redis-{{ version }}.tar.gz
-  sha256: 388bd9656bd7474e90c47a09be22ca7a8d044264745cd3202ee6c1ad83c4fc38
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name.replace('-', '_')}}-{{ version }}.tar.gz
+  sha256: 6271f10a9ee0572f1c67f630b098326a4fe02b898c46a173942766c00307914a
 
 build:
-  noarch: python
-  script: {{ PYTHON }} -m pip install . -vv
   number: 0
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  skip: true  # [py<39]
 
 requirements:
   host:
-    - python >=3.7
+    - python
     - pip
     - hatchling
   run:
-    - python >=3.7
-    - opentelemetry-api >=1.12,<2.dev0
-    - opentelemetry-instrumentation ==0.36b0
-    - opentelemetry-semantic-conventions ==0.36b0
+    - python
+    - opentelemetry-api >=1.12,<2
+    - opentelemetry-instrumentation ==0.58b0
+    - opentelemetry-semantic-conventions ==0.58b0
     - wrapt >=1.12.1
+  run_constrained:
+    - redis >=2.6
 
+# Unable to run tests, fakeredis is not in the main channel.
+# E   ModuleNotFoundError: No module named 'fakeredis'
 test:
   imports:
-    - opentelemetry
-    - opentelemetry.instrumentation
+    - opentelemetry.instrumentation.redis
   commands:
     - pip check
   requires:
     - pip
+    - redis >=2.6
 
 about:
   home: https://github.com/open-telemetry/opentelemetry-python-contrib/tree/main/instrumentation/opentelemetry-instrumentation-redis
   summary: OpenTelemetry Redis instrumentation
   license: Apache-2.0
+  license_family: Apache
   license_file: LICENSE
+  description: This library allows tracing requests made by the Redis library.
+  dev_url: https://github.com/open-telemetry/opentelemetry-python-contrib/tree/main/instrumentation/opentelemetry-instrumentation-redis
+  doc_url: https://opentelemetry-python-contrib.readthedocs.io/en/latest/instrumentation/redis/redis.html
 
 extra:
   recipe-maintainers:
     - mariusvniekerk
+  skip-lints:
+    - invalid_url
+    - documentation_specifies_language
