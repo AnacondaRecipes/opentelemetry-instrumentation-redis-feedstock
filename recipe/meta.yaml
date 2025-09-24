@@ -22,11 +22,11 @@ requirements:
   run:
     - python
     - opentelemetry-api >=1.12,<2
-    - opentelemetry-instrumentation ==0.58b0
-    - opentelemetry-semantic-conventions ==0.58b0
+    - opentelemetry-instrumentation =={{ version }}
+    - opentelemetry-semantic-conventions =={{ version }}
     - wrapt >=1.12.1
   run_constrained:
-    - redis >=2.6
+    - redis-py >=2.6
 
 # Unable to run tests, fakeredis is not in the main channel.
 # E   ModuleNotFoundError: No module named 'fakeredis'
@@ -37,7 +37,7 @@ test:
     - pip check
   requires:
     - pip
-    - redis >=2.6
+    - redis-py >=2.6
 
 about:
   home: https://github.com/open-telemetry/opentelemetry-python-contrib/tree/main/instrumentation/opentelemetry-instrumentation-redis
